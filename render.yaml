@@ -1,7 +1,6 @@
 services:
-  - type: static
+  - type: static_site
     name: calificaciones-frontend
-    env: static
     rootDir: Frontend-calificacionesOnlineGBD/frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
@@ -11,6 +10,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        # Ajusta esta URL si tu backend cambia de dominio o prefijo
         value: https://gestor-calificaciones.onrender.com/api
-
