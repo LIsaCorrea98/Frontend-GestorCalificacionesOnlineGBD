@@ -1,5 +1,14 @@
 // API base configuration
-const API_BASE_URL = 'http://localhost:8080/api';
+// Prioridad:
+// 1. Variable de entorno VITE_API_URL (si está definida)
+// 2. URL de producción: https://gestor-calificaciones.onrender.com/api (por defecto)
+// Para desarrollo local, crear un archivo .env.local con: VITE_API_URL=http://localhost:8080/api
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://gestor-calificaciones.onrender.com/api';
+
+// Log para debugging (solo en desarrollo)
+if (import.meta.env.DEV) {
+  console.log('API Base URL:', API_BASE_URL);
+}
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -17,21 +26,26 @@ const handleResponse = async (response) => {
     return {};
   }
   
+  // Get the response text first
+  const text = await response.text();
+  
   // Try to parse JSON, but handle cases where response might not be JSON
   let data;
   try {
-    const text = await response.text();
     data = text ? JSON.parse(text) : {};
   } catch (e) {
-    // If it's not JSON, return empty object for successful responses
+    // If it's not JSON, it might be a plain string error message
     if (response.ok) {
+      // For successful responses that aren't JSON, return empty object
       return {};
+    } else {
+      // For error responses that aren't JSON, use the text as the error message
+      data = { message: text || `HTTP error! status: ${response.status}` };
     }
-    throw new Error(`Error parsing response: ${e.message}`);
   }
   
   if (!response.ok) {
-    const errorMessage = data.message || data.error || `HTTP error! status: ${response.status}`;
+    const errorMessage = data.message || data.error || text || `HTTP error! status: ${response.status}`;
     
     // Handle authentication errors
     if (response.status === 401) {
@@ -90,12 +104,25 @@ const api = {
   },
 
   async createCourse(courseData) {
-    const response = await fetch(`${API_BASE_URL}/teacher/courses`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(courseData)
-    });
-    return handleResponse(response);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No hay token de autenticación. Por favor, inicie sesión nuevamente.');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/teacher/courses`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(courseData)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      // Si es un error de red (failed to fetch), dar un mensaje más claro
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error('No se pudo conectar con el servidor. Verifique que el backend esté corriendo en http://localhost:8080');
+      }
+      throw error;
+    }
   },
 
   async getTeacherCourses() {
@@ -136,6 +163,36 @@ const api = {
 
   async getAllStudentGrades() {
     const response = await fetch(`${API_BASE_URL}/student/grades`, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // Student management endpoints (for teachers)
+  async getAllStudents(search, courseId) {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (courseId) params.append('courseId', courseId);
+    
+    const url = `${API_BASE_URL}/teacher/students${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  async enrollStudentsToCourse(courseId, studentIds) {
+    const response = await fetch(`${API_BASE_URL}/teacher/courses/${courseId}/enroll-students`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ studentIds })
+    });
+    return handleResponse(response);
+  },
+
+  async unenrollStudentFromCourse(courseId, studentId) {
+    const response = await fetch(`${API_BASE_URL}/teacher/courses/${courseId}/students/${studentId}`, {
+      method: 'DELETE',
       headers: getAuthHeaders()
     });
     return handleResponse(response);

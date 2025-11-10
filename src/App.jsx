@@ -11,6 +11,7 @@ import TeacherUpload from "./pages/teacher/TeacherUpload.jsx";
 import TeacherStats from "./pages/teacher/TeacherStats.jsx";
 import TeacherLogs from "./pages/teacher/TeacherLogs.jsx";
 import TeacherSettings from "./pages/teacher/TeacherSettings.jsx";
+import TeacherManageStudents from "./pages/teacher/TeacherManageStudents.jsx";
 
 import StudentLayout from "./pages/student/StudentLayout.jsx";
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
@@ -39,6 +40,7 @@ export default function App() {
         <Route index element={<TeacherDashboard />} />
         <Route path="courses" element={<TeacherCourses />} />
         <Route path="upload" element={<TeacherUpload />} />
+        <Route path="manage-students" element={<TeacherManageStudents />} />
         <Route path="stats" element={<TeacherStats />} />
         <Route path="logs" element={<TeacherLogs />} />
         <Route path="settings" element={<TeacherSettings />} />

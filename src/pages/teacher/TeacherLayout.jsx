@@ -11,30 +11,25 @@ export default function TeacherLayout() {
       <aside className={styles.sidebar}>
         <div>
           <h2 className={styles.brand}>Profesor</h2>
-          <p style={{color: "#64748b", fontSize: 14}}>{user?.name || "Usuario"}</p>
+          <p style={{color: "#cbd5e1", fontSize: 14, marginBottom: 8}}>{user?.name || "Usuario"}</p>
         </div>
         <nav className={styles.menu}>
           <NavLink to="/teacher" end>🏠 Inicio / Dashboard</NavLink>
           <NavLink to="/teacher/courses">📚 Mis Cursos</NavLink>
           <NavLink to="/teacher/upload">📤 Subir Calificaciones (CSV)</NavLink>
+          <NavLink to="/teacher/manage-students">👥 Gestionar Estudiantes</NavLink>
           <NavLink to="/teacher/stats">📊 Estadísticas</NavLink>
           <NavLink to="/teacher/logs">📋 Bitácora de Entregas</NavLink>
           <NavLink to="/teacher/settings">⚙️ Configuración</NavLink>
         </nav>
-        <button 
-          onClick={logout}
-          style={{
-            marginTop: "auto",
-            padding: "10px",
-            background: "#fee2e2",
-            color: "#991b1b",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
-        >
-          Cerrar Sesión
-        </button>
+        <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <button 
+            onClick={logout}
+            className={styles.logoutBtn}
+          >
+            🚪 Cerrar Sesión
+          </button>
+        </div>
       </aside>
       <main className={styles.content}>
         <Outlet />

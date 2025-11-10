@@ -94,8 +94,11 @@ export default function TeacherDashboard() {
       
       setShowCreate(false);
       setForm({ nombre: "", codigo: "", descripcion: "", periodo: "2025-1" });
+      alert("Curso creado exitosamente");
     } catch (error) {
-      alert(error.message || "Error al crear el curso");
+      console.error("Error creating course:", error);
+      const errorMessage = error.message || "Error al crear el curso. Verifique su conexión y que el backend esté corriendo.";
+      alert(errorMessage);
     }
   };
 
@@ -155,29 +158,60 @@ export default function TeacherDashboard() {
 
       {/* KPIs */}
       <section className={`${styles.kpis} ${styles.grid}`}>
-        <div className={styles.card}>
-          <h4>Cursos activos</h4>
-          <strong style={{ fontSize: 28 }}>{kpi.cursosActivos}</strong>
-          <div className={styles.badge}>Último: {ultimoCurso}</div>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>📚</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>Cursos activos</h4>
+          </div>
+          <strong style={{ fontSize: 36, display: 'block', marginBottom: 8 }}>{kpi.cursosActivos}</strong>
+          <div style={{ background: 'rgba(255,255,255,0.2)', padding: '6px 12px', borderRadius: '20px', fontSize: 12, display: 'inline-block' }}>
+            Último: {ultimoCurso}
+          </div>
         </div>
-        <div className={styles.card}>
-          <h4>Estudiantes inscritos</h4>
-          <strong style={{ fontSize: 28 }}>{kpi.estudiantesInscritos}</strong>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>👥</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>Estudiantes inscritos</h4>
+          </div>
+          <strong style={{ fontSize: 36, display: 'block' }}>{kpi.estudiantesInscritos}</strong>
         </div>
-        <div className={styles.card}>
-          <h4>Última carga</h4>
-          <span className={styles.badge}>{kpi.ultimaCarga || "—"}</span>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>📅</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>Última carga</h4>
+          </div>
+          <strong style={{ fontSize: 24, display: 'block' }}>{kpi.ultimaCarga || "—"}</strong>
         </div>
-        <div className={styles.card}>
-          <h4>Aprobación global</h4>
-          <div className={styles.progressWrap}>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>✅</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>Aprobación global</h4>
+          </div>
+          <strong style={{ fontSize: 36, display: 'block', marginBottom: 12 }}>{kpi.aprobacionGlobal}%</strong>
+          <div className={styles.progressWrap} style={{ background: 'rgba(255,255,255,0.3)' }}>
             <div
               className={styles.progressBar}
-              style={{ width: `${kpi.aprobacionGlobal}%` }}
+              style={{ 
+                width: `${kpi.aprobacionGlobal}%`,
+                background: 'rgba(255,255,255,0.9)'
+              }}
             />
-          </div>
-          <div className={styles.badge} style={{ marginTop: 8 }}>
-            {kpi.aprobacionGlobal}%
           </div>
         </div>
       </section>

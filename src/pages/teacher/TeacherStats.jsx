@@ -88,6 +88,13 @@ export default function TeacherStats() {
   const approvalRate = totalSubmissions > 0 
     ? ((statistics.correctSubmissions / totalSubmissions) * 100).toFixed(1)
     : 0;
+  
+  // Calcular total de ejercicios posibles y entregas
+  const totalPossible = statistics.totalExercises * statistics.totalStudents;
+  const totalDelivered = statistics.correctSubmissions + statistics.incorrectSubmissions + statistics.pendingSubmissions;
+  const deliveryPercentage = totalPossible > 0 
+    ? ((totalDelivered / totalPossible) * 100).toFixed(1)
+    : 0;
 
   // Podio de estudiantes (top 3 por ejercicios resueltos)
   const topStudents = [...(statistics.studentPerformance || [])]
@@ -159,38 +166,95 @@ export default function TeacherStats() {
 
       {/* KPIs principales */}
       <section className={`${styles.grid} ${styles.kpis}`}>
-        <div className={styles.card}>
-          <h4>Promedio General</h4>
-          <strong style={{fontSize: 32, color: '#2563eb'}}>{statistics.averageScore.toFixed(1)}</strong>
-          <div className={styles.progressWrap} style={{marginTop: 12}}>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>📊</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>Promedio General</h4>
+          </div>
+          <strong style={{fontSize: 42, display: 'block', marginBottom: 12}}>{statistics.averageScore.toFixed(1)}</strong>
+          <div className={styles.progressWrap} style={{background: 'rgba(255,255,255,0.3)'}}>
             <div 
               className={styles.progressBar} 
-              style={{width: `${statistics.averageScore}%`}}
+              style={{
+                width: `${statistics.averageScore}%`,
+                background: 'rgba(255,255,255,0.9)'
+              }}
             />
           </div>
         </div>
-        <div className={styles.card}>
-          <h4>% Aprobación</h4>
-          <strong style={{fontSize: 32, color: '#16a34a'}}>{approvalRate}%</strong>
-          <div className={styles.progressWrap} style={{marginTop: 12}}>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>✅</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>% Aprobación</h4>
+          </div>
+          <strong style={{fontSize: 42, display: 'block', marginBottom: 12}}>{approvalRate}%</strong>
+          <div className={styles.progressWrap} style={{background: 'rgba(255,255,255,0.3)'}}>
             <div 
               className={styles.progressBar} 
-              style={{width: `${approvalRate}%`, background: '#16a34a'}}
+              style={{
+                width: `${approvalRate}%`,
+                background: 'rgba(255,255,255,0.9)'
+              }}
             />
           </div>
         </div>
-        <div className={styles.card}>
-          <h4>Total Entregas</h4>
-          <strong style={{fontSize: 32}}>
-            {statistics.correctSubmissions + statistics.incorrectSubmissions + statistics.pendingSubmissions}
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>📤</span>
+            <h4 style={{ margin: 0, color: '#1f2937' }}>Ejercicios Entregados</h4>
+          </div>
+          <strong style={{fontSize: 42, display: 'block', color: '#1f2937', marginBottom: 12}}>
+            {totalDelivered}
           </strong>
-          <p className={styles.muted} style={{marginTop: 8}}>
-            de {statistics.totalExercises * statistics.totalStudents} posibles
-          </p>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.7)', 
+            padding: '12px', 
+            borderRadius: '10px',
+            fontSize: 13,
+            color: '#1f2937'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 500 }}>
+              <span>De un total de:</span>
+              <strong style={{ color: '#667eea' }}>{totalPossible} ejercicios</strong>
+            </div>
+            <div style={{ marginBottom: 8, fontSize: 12, color: '#6b7280' }}>
+              ({statistics.totalStudents} estudiantes × {statistics.totalExercises} ejercicios)
+            </div>
+            <div className={styles.progressWrap} style={{ background: 'rgba(0,0,0,0.1)', marginTop: 8, marginBottom: 8 }}>
+              <div 
+                className={styles.progressBar} 
+                style={{
+                  width: `${deliveryPercentage}%`,
+                  background: 'linear-gradient(90deg, #667eea, #764ba2)'
+                }}
+              />
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 600, textAlign: 'center', color: '#1f2937' }}>
+              {deliveryPercentage}% de tasa de entrega
+            </div>
+          </div>
         </div>
-        <div className={styles.card}>
-          <h4>No Entregados</h4>
-          <strong style={{fontSize: 32, color: '#dc2626'}}>{statistics.notSubmittedCount}</strong>
+        <div className={styles.card} style={{
+          background: 'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)',
+          color: '#fff',
+          border: 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>❌</span>
+            <h4 style={{ color: '#fff', margin: 0 }}>No Entregados</h4>
+          </div>
+          <strong style={{fontSize: 42, display: 'block'}}>{statistics.notSubmittedCount}</strong>
         </div>
       </section>
 
