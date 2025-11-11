@@ -1,8 +1,8 @@
 /* Layout general: dos columnas a pantalla completa */
 .container {
   display: grid;
-  grid-template-columns: 1.1fr 1fr; /* izquierda un poco más ancha */
-  min-height: calc(100dvh - 56px); /* si tienes un header fijo; si no, usa 100dvh */
+  grid-template-columns: 1.25fr 1fr; /* da más espacio a la imagen */
+  min-height: 100dvh; /* llena toda la pantalla en login */
   background: #f3f4f6;
 }
 
@@ -10,6 +10,7 @@
 .hero {
   position: relative;
   background: url("/hero.jpg") center center / cover no-repeat;
+  min-height: 100%; /* asegura que la imagen ocupe toda la altura de la columna */
   isolation: isolate; /* para que overlay no afecte a otros elementos */
 }
 
@@ -81,6 +82,10 @@
   .container {
     grid-template-columns: 1fr;
     min-height: 100dvh;
+  }
+  .hero {
+    min-height: 40vh; /* asegura presencia de la imagen en móviles */
+    background-position: center;
   }
   .heroContent {
     margin: 40px 24px 24px 24px;
