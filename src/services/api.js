@@ -5,10 +5,9 @@
 // Para desarrollo local, crear un archivo .env.local con: VITE_API_URL=http://localhost:8080/api
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://gestor-calificaciones.onrender.com/api';
 
-// Log para debugging (solo en desarrollo)
-if (import.meta.env.DEV) {
-  console.log('API Base URL:', API_BASE_URL);
-}
+// Log para debugging (también en producción para verificar la URL)
+console.log('🔧 API Base URL configurada:', API_BASE_URL);
+console.log('🔧 Variable de entorno VITE_API_URL:', import.meta.env.VITE_API_URL || 'NO CONFIGURADA (usando default)');
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -74,14 +73,29 @@ const api = {
   },
 
   async register(userData) {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData)
-    });
-    return handleResponse(response);
+    const url = `${API_BASE_URL}/auth/register`;
+    console.log('📤 Registrando usuario en:', url);
+    console.log('📤 Datos enviados:', { ...userData, password: '***' });
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+      });
+      
+      console.log('📥 Respuesta del servidor:', response.status, response.statusText);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('❌ Error en registro:', error);
+      // Si es un error de red (CORS, conexión, etc.)
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error(`No se pudo conectar con el servidor en ${url}. Verifique que el backend esté corriendo y accesible.`);
+      }
+      throw error;
+    }
   },
 
   // Teacher endpoints
